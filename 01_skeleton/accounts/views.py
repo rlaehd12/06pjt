@@ -18,7 +18,11 @@ def login(request):
     return render(request, 'accounts/login.html', context)
 
 def logout(request):
-    pass
+    if request.method == "POST":
+        auth_logout(request)
+        return redirect('movies:index')
+    return redirect('movies:index')
+
 def signup(request):
     pass
 def delete(request):
