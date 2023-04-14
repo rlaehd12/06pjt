@@ -18,12 +18,14 @@
           {% csrf_token %}
           <input type="submit" value="로그아웃">
         </form>
-        
         {% comment %} 회원탈퇴 {% endcomment %}
         <form action="{% url 'accounts:delete' %}" method="POST">
           {% csrf_token %}
           <input type="submit" value="회원 탈퇴">
         </form>
+        {% comment %} 내프로필 {% endcomment %}
+        <a href="{% url 'accounts:profile' user.pk %}">내 프로필</a>
+
       {% else %}
         <a href="{% url 'accounts:login' %}">Login</a>
         <a href="{% url 'accounts:signup' %}">Signup</a>
