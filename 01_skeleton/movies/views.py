@@ -1,8 +1,10 @@
 from django.shortcuts import render, redirect
+from django.views.decorators.http import require_http_methods, require_GET, require_POST, require_safe
 from .models import Movie
 from .forms import MovieForm
 
 
+@require_GET
 def index(request):
     movies = Movie.objects.all()
     context = {
@@ -11,6 +13,8 @@ def index(request):
     return render(request, 'movies/index.html', context)
 
 
+@login_required
+@require_http_methods(['GET', 'POST'])
 def create(request):
     if request.method == 'POST':
         form = MovieForm(request.POST)
@@ -25,6 +29,7 @@ def create(request):
     return render(request, 'movies/create.html', context)
 
 
+@require_GET
 def detail(request, pk):
     movie = Movie.objects.get(pk=pk)
     context = {
@@ -33,12 +38,15 @@ def detail(request, pk):
     return render(request, 'movies/detail.html', context)
 
 
+@require_POST
 def delete(request, pk):
     movie = Movie.objects.get(pk=pk)
     movie.delete()
     return redirect('movies:index')
 
 
+@login_required
+@require_http_methods(['GET', 'POST'])
 def update(request, pk):
     movie = Movie.objects.get(pk=pk)
     if request.method == 'POST':

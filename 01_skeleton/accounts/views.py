@@ -18,6 +18,7 @@ def login(request):
     return render(request, 'accounts/login.html', context)
 
 def logout(request):
+    print('hi')
     pass
 def signup(request):
     pass
