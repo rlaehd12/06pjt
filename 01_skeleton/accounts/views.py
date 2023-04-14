@@ -5,6 +5,7 @@ from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash, get_user_model
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
+from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST, require_safe, require_http_methods
 
 # Create your views here.
@@ -79,5 +80,12 @@ def profile(request, user_pk):
     return render(request, 'accounts/profile.html', context)
 
 
-def follow(request):
-    pass
+@require_POST
+@login_required
+def follow(request, user_pk):
+    person = get_user_model().objects.get(pk=user_pk)
+    if request.user in person.followers.all():
+        person.followers.remove(request.user)
+    else:
+        person.followers.add(request.user)
+    return redirect('accounts:profile', user_pk)
