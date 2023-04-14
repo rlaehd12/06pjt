@@ -9,8 +9,30 @@
 </head>
 <body>
   <div class="container">
+    <nav>
+      {% if user.is_authenticated %}
+        <h2> Hello, {{user}} </h2>
+        <a href="{% url 'accounts:update' %}">회원 정보 수정</a>
+        {% comment %} 로그아웃 {% endcomment %}
+        <form action="{% url 'accounts:logout' %}" method="POST">
+          {% csrf_token %}
+          <input type="submit" value="로그아웃">
+        </form>
+        
+        {% comment %} 회원탈퇴 {% endcomment %}
+        <form action="{% url 'accounts:delete' %}" method="POST">
+          {% csrf_token %}
+          <input type="submit" value="회원 탈퇴">
+        </form>
+      {% else %}
+        <a href="{% url 'accounts:login' %}">Login</a>
+        <a href="{% url 'accounts:signup' %}">Signup</a>
+      {% endif %}
+      <hr>
+    </nav>
     {% block content %}
     {% endblock content %}
+
   </div>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
 </body>
