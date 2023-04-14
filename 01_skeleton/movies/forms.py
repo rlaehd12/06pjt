@@ -13,4 +13,5 @@ class CommentForm(forms.ModelForm):
         model = Comment
         exclude = (
             'user',
+            'movie_id',
         )

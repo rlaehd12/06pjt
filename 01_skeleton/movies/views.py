@@ -92,6 +92,13 @@ def comments_delete(request, pk, comment_pk):
         comment.delete()
     return redirect('movies:detail', pk)
 
-
+@require_POST
 def likes(request, movie_pk):
-    pass
+    if request.user.is_authenticated:
+        movie = Movie.objects.get(pk=movie_pk)
+        if movie.like_users.filter(pk=request.user.pk).exists():
+            movie.like_users.remove(request.user)
+        else:
+            movie.like_users.add(request.user)
+        return redirect('movies:index')
+    return redirect('accounts:login')

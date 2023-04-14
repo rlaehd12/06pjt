@@ -5,7 +5,26 @@
   <a href="{% url 'movies:create' %}">[CREATE]</a>
   <hr>
   {% for movie in movies %}
-    <a href="{% url 'movies:detail' movie.pk %}"><p>{{ movie.title }}</p></a>
-    <hr>
+    <p>
+      [{{movie.id}}] 
+      <a href="{% url 'movies:detail' movie.pk %}" id="movie-title">{{movie.title}}</a>
+      
+    </p>
+
+    <p><b>{{movie.like_users.all|length}}개의 좋아요</b></p>
+
+    {% if request.user.is_authenticated %}
+      <div>
+        <form action="{% url 'movies:likes' movie.pk %}" method="POST">
+          {% csrf_token %}
+          {% if request.user in movie.like_users.all %}
+            <input type="submit" value="안좋아해!">
+          {% else %}
+            <input type="submit" value="좋아해!">
+          {% endif %}
+        </form>
+      </div>
+    {% endif %}
+    <hr />
   {% endfor %}
 {% endblock %}
