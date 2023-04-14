@@ -1,6 +1,8 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.forms import AuthenticationForm
 from .forms import CustomUserChangeForm, CustomUserCreationForm
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
 from django.views.decorators.http import require_POST, require_safe, require_http_methods
@@ -47,9 +49,30 @@ def delete(request):
 
 
 def update(request):
-    pass
+    if request.method == 'POST':
+        form = CustomUserChangeForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            return redirect('movies:index')
+    else:
+        form = CustomUserChangeForm(instance=request.user)
+    context = {'form': form}
+    return render(request, 'accounts/update.html', context)
+
+
 def password(request):
-    pass
+    if request.method == 'POST':
+        form = PasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            form.save()
+            update_session_auth_hash(request, form.user)
+            return redirect('movies:index')
+    else:
+        form = PasswordChangeForm(request.user)
+    context = {'form': form}
+    return render(request, 'accounts/password.html', context)
+
+
 def profile(request):
     pass
 def follow(request):
